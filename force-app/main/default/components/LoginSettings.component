@@ -1,0 +1,195 @@
+<apex:component controller="LoginSettingsController" allowDML="true">
+    <apex:slds />
+    <apex:form >
+        <apex:pageBlock title="Sentinel Connect Settings" mode="view" rendered="{!IF(($CurrentPage.parameters.mode==''||$CurrentPage.parameters.mode=='view'),TRUE,FALSE)}">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Edit" action="{!editRedirect}" />
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="Dev Login Details">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >UserName</apex:outputLabel>
+                    <apex:outputText value="{!Settings.Username__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Password</apex:outputLabel>
+                    <apex:outputText >******</apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Authentication URL</apex:outputLabel>
+                    <apex:outputText value="{!Settings.Org_URL__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >API URL</apex:outputLabel>
+                    <apex:outputText value="{!Settings.DML_Url__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Stage Login Details">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >UserName</apex:outputLabel>
+                    <apex:outputText value="{!Settings.StageUsername__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Password</apex:outputLabel>
+                    <apex:outputText >******</apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Authentication URL</apex:outputLabel>
+                    <apex:outputText value="{!Settings.StageOrg_URL__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >API URL</apex:outputLabel>
+                    <apex:outputText value="{!Settings.StageDML_Url__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Production Login Details">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >UserName</apex:outputLabel>
+                    <apex:outputText value="{!Settings.ProdUsername__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Password</apex:outputLabel>
+                    <apex:outputText >******</apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Authentication URL</apex:outputLabel>
+                    <apex:outputText value="{!Settings.ProdOrg_URL__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >API URL</apex:outputLabel>
+                    <apex:outputText value="{!Settings.ProdDML_Url__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Configuration">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Enable Order Sync</apex:outputLabel>
+                    <apex:inputCheckbox disabled="true" value="{!Settings.Order_Sync__c}" />
+                </apex:pageBlockSectionItem>
+
+                <!-- start adding to choose for which object needs to Entitlement got created 28 Oct 2020  -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Enable Quote Sync</apex:outputLabel>
+                    <apex:inputCheckbox disabled="true" value="{!Settings.Quote_Sync__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="false">
+                    <apex:outputLabel >Enable Subscription Sync</apex:outputLabel>
+                    <apex:inputCheckbox disabled="true" value="{!Settings.Subscription_Sync__c}" />
+                </apex:pageBlockSectionItem>
+                <!-- end adding to choose for which object needs to Entitlement got created 28 Oct 2020  -->
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Timeout (in ms)</apex:outputLabel>
+                    <apex:outputText value="{!Settings.Request_Timeout__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Activated Org : </apex:outputLabel>
+                    <apex:selectRadio value="{!Settings.Selected_Org__c}" disabled="true" layout="pageDirection">
+                        <apex:selectOptions value="{!items}" />
+                    </apex:selectRadio>
+                </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
+
+
+
+        </apex:pageBlock>
+
+        <apex:pageBlock title="Sentinel Connect Settings" mode="edit" rendered="{!IF(($CurrentPage.parameters.mode=='edit'),TRUE,FALSE)}">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!rdSave}" />
+                <apex:commandButton value="Cancel" action="{!cancelRedirect}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Dev Login Details">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >UserName</apex:outputLabel>
+                    <apex:inputText value="{!Settings.Username__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Password</apex:outputLabel>
+                    <apex:inputSecret disabled="false" redisplay="true" value="{!Settings.Password__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Authentication URL</apex:outputLabel>
+                    <apex:inputField value="{!Settings.Org_URL__c}" type="url" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >API URL</apex:outputLabel>
+                    <apex:inputField value="{!Settings.DML_Url__c}" type="url" />
+                </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Stage Login Details">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >UserName</apex:outputLabel>
+                    <apex:inputText value="{!Settings.StageUsername__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Password</apex:outputLabel>
+                    <apex:inputSecret disabled="false" redisplay="true" value="{!Settings.StagePassword__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Authentication URL</apex:outputLabel>
+                    <apex:inputField value="{!Settings.StageOrg_URL__c}" type="url" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >API URL</apex:outputLabel>
+                    <apex:inputField value="{!Settings.StageDML_Url__c}" type="url" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Production Login Details">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >UserName</apex:outputLabel>
+                    <apex:inputText value="{!Settings.ProdUsername__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Password</apex:outputLabel>
+                    <apex:inputSecret disabled="false" redisplay="true" value="{!Settings.ProdPassword__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Authentication URL</apex:outputLabel>
+                    <apex:inputField value="{!Settings.ProdOrg_URL__c}" type="url" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >API URL</apex:outputLabel>
+                    <apex:inputField value="{!Settings.ProdDML_Url__c}" type="url" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="User Details">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Enable Order Sync</apex:outputLabel>
+                    <apex:inputCheckbox disabled="false" value="{!Settings.Order_Sync__c}" />
+                </apex:pageBlockSectionItem>
+                <!-- start adding to choose for which object needs to Entitlement got created 28 Oct 2020  -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Enable Quote Sync</apex:outputLabel>
+                    <apex:inputCheckbox disabled="false" value="{!Settings.Quote_Sync__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="false">
+                    <apex:outputLabel >Enable Subscription Sync</apex:outputLabel>
+                    <apex:inputCheckbox disabled="false" value="{!Settings.Subscription_Sync__c}" />
+                </apex:pageBlockSectionItem>
+                <!-- end adding to choose for which object needs to Entitlement got created 28 Oct 2020  -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Timeout (in ms)</apex:outputLabel>
+                    <apex:inputField value="{!Settings.Request_Timeout__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Activated Org : </apex:outputLabel>
+                    <apex:selectRadio value="{!Settings.Selected_Org__c}" layout="pageDirection">
+                        <apex:selectOptions value="{!items}" />
+                    </apex:selectRadio>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:component>

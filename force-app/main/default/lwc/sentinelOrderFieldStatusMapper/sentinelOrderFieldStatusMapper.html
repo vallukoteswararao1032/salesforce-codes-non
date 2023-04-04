@@ -1,0 +1,32 @@
+<template>
+    <template if:true={showLoader}>
+        <lightning-spinner></lightning-spinner>
+    </template>
+    <template if:false={showLoader}>
+        <template for:each={entitlementList} for:item="item" for:index="index">
+            <li class="slds-item" key={item.Id}>
+                <div class="slds-grid slds-gutters slds-grid_vertical-align-center slds-p-around_x-small">
+                    <div class="slds-col slds-text-align_centre slds-size_4-of-12" >
+                        <lightning-combobox variant="label-hidden"
+                                            placeholder="Choose Status"
+                                            data-id={item.Id}
+                                            onchange={fieldChanged}
+                                            options={statusPicklist}
+                                            data-field="status"
+                                            class="input"
+                                            value={item.SF_orderfield_value__c}>
+                        </lightning-combobox>
+                    </div>
+                    
+                    <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                        <lightning-icon icon-name="utility:forward" size="medium"  ></lightning-icon>
+                    </div>
+                    
+                    <div class="slds-col slds-text-align_left slds-size_4-of-12">
+                        <p>{item.Sentinel_Status_value__c}</p>
+                    </div>
+                </div>
+            </li>
+        </template>
+    </template>
+</template>

@@ -1,0 +1,631 @@
+<aura:component controller="SentinelFieldSelectorController" implements="force:appHostable">
+  <aura:attribute name="objectApi" type="String" default="Order" />
+  <aura:attribute name="Order" type="String" default="Order" access="global"/>
+  <aura:attribute name="Status" type="String" default="Status" access="global"/>
+  <aura:attribute name="StatusPicklist" type="List" default ="[]" /> 
+  <aura:handler name="init" value="{! this }" action="{!c.init}"/>
+  <aura:attribute name="orderFieldMapperList" type="Object" />
+  <aura:attribute name="orderFieldMapperDeleteList" type="Object" />
+  <ltng:require scripts="{!$Resource.jqueryMin351}" afterScriptsLoaded="{!c.doInit}" />
+  <!-- added to check which is sync is enabled from user settings-->
+  <aura:attribute name="isSync" type="boolean" default="true" />
+  <aura:attribute name="usesetting" type="Sentinel_User_Info__c" />
+
+  <article class="slds-card">
+    <aura:if isTrue="{!v.isSync}">
+      <div Id="mainDiv">
+        <div class="slds-card__header slds-grid">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+              <h2 class="slds-card__header-title">
+                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Order Field Mapper">
+                  <span class="slds-text-heading_medium">Order Field Mapper</span>
+                </a>
+              </h2>
+            </div>
+            <div class="slds-no-flex">
+              <button class="slds-button slds-button_brand" onclick="{!c.saveAction}">Save</button>
+            </div>
+          </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+          <lightning:tabset selectedTabId="EntitlementTabId">
+            <lightning:tab label="Entitlement" id="EntitlementTabId">
+              <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title">
+                  <button aria-controls="fruitsList" class="slds-button slds-section__title-action">
+                    <div onclick="" data-auraId="Entitlement">
+                      <lightning:icon iconName="utility:switch" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" alternativeText="button icon" />
+                    </div>
+                    <span class="slds-truncate" title="Entitlement">Entitlement</span>
+                  </button>
+                </h3>
+                <div class="slds-section__content" id="fruitsList">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item" indexVar="index">
+                      <aura:if isTrue="{! and(item.Category__c == 'Entitlement', !item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col slds-text-align_left slds-size_3-of-12">
+                              <div class="slds-p-left_small  slds-text-align_left slds-text-heading_small"
+                                style="padding-top: 7px;" title="{!item.Field_Description__c}">
+                                {!item.Sentinel_Api_Field__c}
+                              </div>
+                            </div>
+
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <!--<button class="slds-button slds-text-link_reset " onclick="{!c.deleteHandler}">
+                            <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                              title="Delete" />
+                          </button>-->
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+                  </ul>
+                </div>
+              </div>
+              <!-- Entitlement Custom Attribute-->
+
+              <div class="slds-section slds-is-open" aura:id="colorSection">
+                <!--section header-->
+                <h3 class="slds-section__title">
+                  <button aria-controls="VegetablesId" class="slds-button slds-section__title-action">
+                    <span onclick="{!c.toggleSection}" data-auraId="colorSection">
+                      <lightning:icon iconName="utility:switch" alternativeText="button icon" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" />
+                    </span>
+                    <span class="slds-truncate" title="Custom Attribute">Entitlement Custom Attribute</span>
+                  </button>
+                  <div data-category="Entitlement" onclick="{!c.addRow}">
+                    <lightning:icon iconName="utility:add" size="x-small"
+                      class="slds-section__title-action-icon slds-button__icon_right slds-align_right"
+                      alternativeText="button icon" />
+                  </div>
+
+                </h3>
+                <!--section body-->
+                <div class="slds-section__content" id="VegetablesId">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item" indexVar="index">
+                      <aura:if isTrue="{! and(item.Category__c == 'Entitlement', item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+                            </div>
+
+                            <div class=" slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col  slds-size_4-of-12">
+                              <!--<div class="slds-text-align_center slds-text-heading_small" style="padding-top: 7px;">-->
+                              <lightning:input name="input8" variant="label-hidden"
+                                value="{!item.Sentinel_Api_Field__c}" placeholder="type custom attribute..." label=""
+                                title="{!item.Field_Description__c}" />
+                              <!--</div>-->
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <button class="slds-button slds-text-link_reset" data-index="{!index}"
+                                onclick="{!c.deleteHandler}">
+                                <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                                  title="Delete" />
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+
+                  </ul>
+                </div>
+              </div>
+            </lightning:tab>
+
+            <!-- Product -->
+            <lightning:tab label="Product" id="product">
+
+              <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title">
+                  <button aria-controls="fruitsList" class="slds-button slds-section__title-action">
+                    <div onclick="" data-auraId="Product">
+                      <lightning:icon iconName="utility:switch" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" alternativeText="button icon" />
+                    </div>
+                    <span class="slds-truncate" title="Entitlement">Product</span>
+                  </button>
+                </h3>
+                <div class="slds-section__content" id="fruitsList">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item">
+                      <aura:if isTrue="{! and(item.Category__c == 'Product', !item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="OrderItem" fieldApiName="{!item.SF_Api_Field__c}"
+                                fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col slds-text-align_left slds-size_4-of-12">
+                              <div class="slds-text-align_left slds-p-left_small slds-text-heading_small"
+                                style="padding-top: 7px;" title="{!item.Field_Description__c}">
+                                {!item.Sentinel_Api_Field__c}</div>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <!--<button class="slds-button slds-text-link_reset " onclick="{!c.deleteHandler}">
+                            <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                              title="Delete" />
+                          </button>-->
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+                  </ul>
+                </div>
+              </div>
+              <!-- Partner Custom Attribute-->
+
+              <div class="slds-section slds-is-open" aura:id="colorSection">
+                <!--section header-->
+                <h3 class="slds-section__title">
+                  <button aria-controls="VegetablesId" class="slds-button slds-section__title-action">
+                    <span onclick="{!c.toggleSection}" data-auraId="colorSection">
+                      <lightning:icon iconName="utility:switch" alternativeText="button icon" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" />
+                    </span>
+                    <span class="slds-truncate" title="Custom Attribute">Product Custom Attribute</span>
+                  </button>
+                  <div data-category="Product" onclick="{!c.addRow}">
+                    <lightning:icon iconName="utility:add" size="x-small"
+                      class="slds-section__title-action-icon slds-button__icon_right slds-align_right"
+                      alternativeText="button icon" />
+                  </div>
+
+                </h3>
+                <!--section body-->
+                <div class="slds-section__content" id="Product">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item" indexVar="index">
+                      <aura:if isTrue="{! and(item.Category__c == 'Product', item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="OrderItem" fieldApiName="{!item.SF_Api_Field__c}"
+                                fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col  slds-size_4-of-12">
+                              <!--<div class="slds-text-align_center slds-text-heading_small" style="padding-top: 7px;">-->
+                              <lightning:input name="input8" variant="label-hidden"
+                                value="{!item.Sentinel_Api_Field__c}" placeholder="type custom attribute..." label=""
+                                title="{!item.Field_Description__c}" />
+                              <!--</div>-->
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <button class="slds-button slds-text-link_reset " data-index="{!index}"
+                                onclick="{!c.deleteHandler}">
+                                <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                                  title="Delete" />
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+
+                  </ul>
+                </div>
+              </div>
+            </lightning:tab>
+
+            <!-- added 27 Nov -->
+            <!--CUSTOMER TAB-->
+            <lightning:tab label="Customer" id="Customer">
+
+              <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title">
+                  <button aria-controls="fruitsList" class="slds-button slds-section__title-action">
+                    <div onclick="" data-auraId="Customer">
+                      <lightning:icon iconName="utility:switch" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" alternativeText="button icon" />
+                    </div>
+                    <span class="slds-truncate" title="Entitlement">Customer</span>
+                  </button>
+                </h3>
+                <div class="slds-section__content" id="fruitsList">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item">
+                      <aura:if isTrue="{! and(item.Category__c == 'Customer', !item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+
+                            <div class="slds-col slds-text-align_left slds-size_4-of-12">
+                              <div class="slds-text-align_left slds-p-left_small slds-text-heading_small"
+                                style="padding-top: 7px;" title="{!item.Field_Description__c}">
+                                {!item.Sentinel_Api_Field__c}</div>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <!--<button class="slds-button slds-text-link_reset " onclick="{!c.deleteHandler}">
+                            <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                              title="Delete" />
+                          </button>-->
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+                  </ul>
+                </div>
+              </div>
+              <!-- Customer Custom Attribute-->
+
+              <div class="slds-section slds-is-open" aura:id="colorSection">
+                <!--section header-->
+                <h3 class="slds-section__title">
+                  <button aria-controls="VegetablesId" class="slds-button slds-section__title-action">
+                    <span onclick="{!c.toggleSection}" data-auraId="colorSection">
+                      <lightning:icon iconName="utility:switch" alternativeText="button icon" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" />
+                    </span>
+                    <span class="slds-truncate" title="Custom Attribute">Customer Custom Attribute</span>
+                  </button>
+                  <div data-category="Customer" onclick="{!c.addRow}">
+                    <lightning:icon iconName="utility:add" size="x-small"
+                      class="slds-section__title-action-icon slds-button__icon_right slds-align_right"
+                      alternativeText="button icon" />
+                  </div>
+
+                </h3>
+                <!--section body-->
+                <div class="slds-section__content" id="VegetablesId">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item" indexVar="index">
+                      <aura:if isTrue="{! and(item.Category__c == 'Customer', item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+
+                            <div class="slds-col  slds-size_4-of-12">
+                              <!--<div class="slds-text-align_center slds-text-heading_small" style="padding-top: 7px;">-->
+                              <lightning:input name="input8" variant="label-hidden"
+                                value="{!item.Sentinel_Api_Field__c}" placeholder="type custom attribute..." label=""
+                                title="{!item.Field_Description__c}" />
+                              <!--</div>-->
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <button class="slds-button slds-text-link_reset " data-index="{!index}"
+                                onclick="{!c.deleteHandler}">
+                                <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                                  title="Delete" />
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+
+                  </ul>
+                </div>
+              </div>
+            </lightning:tab>
+
+            <!-- customer contact-->
+            <lightning:tab label="Customer Contact" id="customerContact">
+
+              <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title">
+                  <button aria-controls="fruitsList" class="slds-button slds-section__title-action">
+                    <div onclick="" data-auraId="CustomerContact">
+                      <lightning:icon iconName="utility:switch" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" alternativeText="button icon" />
+                    </div>
+                    <span class="slds-truncate" title="Entitlement">Customer Contact</span>
+                  </button>
+                </h3>
+                <div class="slds-section__content" id="fruitsList">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item">
+                      <aura:if isTrue="{! and(item.Category__c == 'CustomerContact', !item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col slds-text-align_left slds-size_4-of-12">
+                              <div class="slds-text-align_left slds-p-left_small  slds-text-heading_small"
+                                style="padding-top: 7px;" title="{!item.Field_Description__c}">
+                                {!item.Sentinel_Api_Field__c}</div>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <!--<button class="slds-button slds-text-link_reset " onclick="{!c.deleteHandler}">
+                            <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                              title="Delete" />
+                          </button>-->
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+                  </ul>
+                </div>
+              </div>
+              <!-- Customer Custom Attribute-->
+
+              <div class="slds-section slds-is-open" aura:id="colorSection">
+                <!--section header-->
+                <h3 class="slds-section__title">
+                  <button aria-controls="VegetablesId" class="slds-button slds-section__title-action">
+                    <span onclick="{!c.toggleSection}" data-auraId="colorSection">
+                      <lightning:icon iconName="utility:switch" alternativeText="button icon" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" />
+                    </span>
+                    <span class="slds-truncate" title="Custom Attribute">Customer Contact Custom Attribute</span>
+                  </button>
+                  <div data-category="CustomerContact" onclick="{!c.addRow}">
+                    <lightning:icon iconName="utility:add" size="x-small"
+                      class="slds-section__title-action-icon slds-button__icon_right slds-align_right"
+                      alternativeText="button icon" />
+                  </div>
+
+                </h3>
+                <!--section body-->
+                <div class="slds-section__content" id="CustomerContact">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item" indexVar="index">
+                      <aura:if isTrue="{! and(item.Category__c == 'CustomerContact', item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col  slds-size_4-of-12">
+                              <!--<div class="slds-text-align_center slds-text-heading_small" style="padding-top: 7px;">-->
+                              <lightning:input name="input8" variant="label-hidden"
+                                value="{!item.Sentinel_Api_Field__c}" placeholder="type custom attribute..." label=""
+                                title="{!item.Field_Description__c}" />
+                              <!--</div>-->
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <button class="slds-button slds-text-link_reset " data-index="{!index}"
+                                onclick="{!c.deleteHandler}">
+                                <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                                  title="Delete" />
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+
+                  </ul>
+                </div>
+              </div>
+            </lightning:tab>
+            <!-- Channel Partner-->
+            <lightning:tab label="Channel Partner" id="channelPartner">
+
+              <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title">
+                  <button aria-controls="fruitsList" class="slds-button slds-section__title-action">
+                    <div onclick="" data-auraId="ChannelPartner">
+                      <lightning:icon iconName="utility:switch" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" alternativeText="button icon" />
+                    </div>
+                    <span class="slds-truncate" title="ChannelPartner">Channel Partner</span>
+                  </button>
+                </h3>
+                <div class="slds-section__content" id="fruitsList">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item">
+                      <aura:if isTrue="{! and(item.Category__c == 'ChannelPartner', !item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col slds-text-align_left slds-size_4-of-12">
+                              <div class="slds-text-align_left slds-p-left_small slds-text-heading_small"
+                                style="padding-top: 7px;" title="{!item.Field_Description__c}">
+                                {!item.Sentinel_Api_Field__c}</div>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <!--<button class="slds-button slds-text-link_reset " onclick="{!c.deleteHandler}">
+                            <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                              title="Delete" />
+                          </button>-->
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+                  </ul>
+                </div>
+              </div>
+              <!-- Customer Custom Attribute-->
+
+              <div class="slds-section slds-is-open" aura:id="colorSection">
+                <!--section header-->
+                <h3 class="slds-section__title">
+                  <button aria-controls="VegetablesId" class="slds-button slds-section__title-action">
+                    <span onclick="{!c.toggleSection}" data-auraId="colorSection">
+                      <lightning:icon iconName="utility:switch" alternativeText="button icon" size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left" />
+                    </span>
+                    <span class="slds-truncate" title="Custom Attribute">Channel Partner Custom Attribute</span>
+                  </button>
+                  <div data-category="ChannelPartner" onclick="{!c.addRow}">
+                    <lightning:icon iconName="utility:add" size="x-small"
+                      class="slds-section__title-action-icon slds-button__icon_right slds-align_right"
+                      alternativeText="button icon" />
+                  </div>
+
+                </h3>
+                <!--section body-->
+                <div class="slds-section__content" id="ChannelPartner">
+                  <ul class="slds-has-dividers_around slds-has-block-links_space">
+
+                    <aura:iteration items="{!v.orderFieldMapperList}" var="item" indexVar="index">
+                      <aura:if isTrue="{! and(item.Category__c == 'ChannelPartner', item.IsCustomAttribute__c)}">
+                        <li class="slds-item">
+                          <div class="slds-grid slds-gutters">
+
+
+                            <div class="slds-col slds-text-align_centre slds-size_4-of-12">
+                              <c:SentinelFieldSelector objectApiName="{!v.objectApi}"
+                                fieldApiName="{!item.SF_Api_Field__c}" fieldType="{!item.Field_Type__c}" />
+
+                            </div>
+
+                            <div class="slds-col slds-text-align_center slds-size_3-of-12">
+                              <lightning:icon iconName="utility:forward" size="medium" alternativeText="sss" />
+                            </div>
+
+                            <div class="slds-col  slds-size_4-of-12">
+                              <!--<div class="slds-text-align_center slds-text-heading_small" style="padding-top: 7px;">-->
+                              <lightning:input name="input8" variant="label-hidden"
+                                value="{!item.Sentinel_Api_Field__c}" placeholder="type custom attribute..." label=""
+                                title="{!item.Field_Description__c}" />
+                              <!--</div>-->
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                              <button class="slds-button slds-text-link_reset " data-index="{!index}"
+                                onclick="{!c.deleteHandler}">
+                                <lightning:icon iconName="action:delete" alternativeText="Delete" size="x-small"
+                                  title="Delete" />
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      </aura:if>
+                    </aura:iteration>
+
+                  </ul>
+                </div>
+
+              </div>
+            </lightning:tab>
+            
+            <!-- 1st Feb 2022-->
+           <!-- Entitlement Status-->              
+           <lightning:tab label="Entitlement Status" id="entitlementStatus">
+            <div class="slds-section slds-is-open">
+              <h3 class="slds-section__title">
+                <button aria-controls="fruitsList" class="slds-button slds-section__title-action">
+                  <div onclick="" data-auraId="EntitlementStatus">
+                    <lightning:icon iconName="utility:switch" size="x-small"
+                      class="slds-section__title-action-icon slds-button__icon_left" alternativeText="button icon" />
+                  </div>
+                  <span class="slds-truncate" title="EntitlementStatus">Entitlement Status</span>
+                </button>
+              </h3>
+                
+                <div class="slds-section__content" id="fruitsList">
+                    <ul class="slds-has-dividers_around slds-has-block-links_space"> 
+                      <c:sentinelOrderFieldStatusMapper aura:id="childlwc" orderMapperList="{!v.orderFieldMapperList}" statusPicklist="{!v.StatusPicklist}"></c:sentinelOrderFieldStatusMapper>
+                    </ul>
+                </div>   
+              </div>  
+              
+            </lightning:tab>
+
+          </lightning:tabset>
+
+        </div>
+      </div>
+
+      <aura:set attribute="else">
+        <div class="slds-media__body" id="showMsgNoAccessDiv">
+          <span class="slds-text-heading_medium" style="color:red;text-align:center;">You dont have access
+            for it. Please check user settings.</span>
+        </div>
+      </aura:set>
+    </aura:if>
+  </article>
+</aura:component>

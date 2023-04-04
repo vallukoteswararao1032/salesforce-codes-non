@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subscription_Sync__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Entitlement will be created in Sentinel when Subscription will be selected from Sentinel Connect Settings page</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Entitlement will be created in Sentinel when Subscription will be selected from Sentinel Connect Settings page</inlineHelpText>
+    <label>Subscription Sync</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

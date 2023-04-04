@@ -1,0 +1,79 @@
+<aura:component controller="SentinelFieldSelectorController">
+  <aura:attribute name="fieldApiName" type="String" default="" />
+  <aura:attribute name="objectApiName" type="String" default="" />
+  <aura:attribute name="fieldType" type="String" default="" />
+  <aura:attribute name="isModalOpen" type="Boolean" default="false" />
+  <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}" />-->
+  <ltng:require scripts="{!$Resource.jqueryMin351}" afterScriptsLoaded="{!c.scriptLoaded}" />
+  <aura:handler name="render" value="{!this}" action="{!c.onRender}" />
+
+  <aura:attribute name="firstLevelFieldList" type="Object" access="public" />
+  <aura:attribute name="secondLevelFieldList" type="Object" />
+  <aura:attribute name="thirdLevelFieldList" type="Object" />
+  <aura:attribute name="selectedFieldList" type="String[]" />
+  <div class="demo-only demo-only--sizing slds-grid slds-wrap slds-p-horizontal_xx-small">
+    <div class="slds-size_1-of-3">
+      <aura:if isTrue="{!empty(v.fieldApiName)}">
+        <lightning:button variant="base" label="+" title="Select field" onclick="{! c.showModal }" />
+        <aura:set attribute="else">
+          <lightning:button variant="base" label="{!v.fieldApiName}" title="Select field" onclick="{! c.showModal }" />
+        </aura:set>
+      </aura:if>
+
+    </div>
+    <div class="slds-size_1-of-3"></div>
+    <div class="slds-size_1-of-3 slds-align_right">
+      <lightning:button variant="destructive" label="Clear" title="Clear field" onclick="{!c.clearFieldValue }" />
+    </div>
+
+
+  </div>
+  <div>
+    <aura:if isTrue="{!v.isModalOpen}">
+      <!-- Modal/Popup Box starts here-->
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+          <!-- Modal/Popup Box Header Starts here-->
+          <header class="slds-modal__header">
+            Select Field
+          </header>
+          <!--Modal/Popup Box Body Starts here-->
+          <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+              <div id="firstLevelId" class="slds-size_1-of-3" style="width:180px">
+                <aura:iteration items="{!v.firstLevelFieldList}" var="item">
+                  <div onclick="{!c.firstListClickHandler}" id="{!item.fieldApiName}" data-level="1"
+                    data-type="{!item.fieldType}" data-referenceTo="{!item.referenceToObject}"
+                    class="{!item.fieldApiName}">
+                    {!item.fieldLabel}
+                  </div>
+                </aura:iteration>
+              </div>
+              <div class="slds-size_2-of-3" style="width:180px">
+                <aura:iteration items="{!v.secondLevelFieldList}" var="item">
+                  <div onclick="{!c.secondListClickHandler}" id="{!item.fieldApiName}" class="{!item.fieldApiName}"
+                    data-type="{!item.fieldType}" data-referenceTo="{!item.referenceToObject}" data-level="2">
+                    {!item.fieldLabel}
+                  </div>
+                </aura:iteration>
+              </div>
+              <div class="slds-size_3-of-3" style="width:180px">
+                <aura:iteration items="{!v.thirdLevelFieldList}" var="item">
+                  <div onclick="{!c.thirdListClickHandler}" id="{!item.fieldApiName}" class="{!item.fieldApiName}"
+                    data-type="{!item.fieldType}" data-referenceTo="{!item.referenceToObject}" data-level="3">
+                    {!item.fieldLabel}
+                  </div>
+                </aura:iteration>
+              </div>
+            </div>
+          </div>
+          <!--Modal/Popup Box Footer Starts here-->
+          <footer class="slds-modal__footer">
+            <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+          </footer>
+        </div>
+      </section>
+    </aura:if>
+  </div>
+</aura:component>

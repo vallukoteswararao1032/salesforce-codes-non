@@ -1,0 +1,11 @@
+.THIS .slds-card__header{
+	background: #f3f2f2;
+    padding: 17px !important;
+    color: black;
+    font-weight: 600;
+
+}
+.THIS .featuresSection.SENTNLProductFeatures{
+    border: 1px solid black !important;
+    /*border-style:groove;*/
+}

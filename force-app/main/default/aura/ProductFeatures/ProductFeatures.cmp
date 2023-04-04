@@ -1,0 +1,162 @@
+<aura:component controller="SentinelFieldSelectorController" implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+      <aura:attribute name="gridData" type="Object"/>
+      <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+      <aura:attribute name="featureLicenceModel" type="string"/>
+     <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="loaded" type="Boolean" default="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+	<aura:attribute name="isInclued" type="boolean" default="true"/>
+    <aura:if isTrue="{!v.gridData.productKeys.productKey!=null}">
+    <div class="featuresSection">
+	<lightning:card aura:id="lightCard" class="slds-card_boundary" variant="Brand" title="Order Product Features" iconName="custom:custom14">
+     <lightning:accordion aura:id="accordion">
+        <aura:iteration items="{!v.gridData.productKeys.productKey}" var="gridCol">
+            <lightning:accordionSection name="A" label="{!gridCol.item.itemProduct.product.externalId}" >
+                <aura:set attribute="body">
+                    
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--striped slds-max-medium-table--stacked-horizontal"
+                           role="grid">
+                        <thead>
+                            <tr>
+                                <th class="slds-is-sortable slds-cell-wrap" scope="col">
+                                    Feature Name
+                                </th>
+                                <th class="slds-is-sortable slds-cell-wrap" scope="col">
+                                     Feature State
+                                </th>
+                                <th class="slds-is-sortable slds-cell-wrap" scope="col">
+                                    Licence Model
+                                </th>
+                                 <th class="slds-is-sortable slds-cell-wrap" scope="col">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!gridCol.item.itemProduct.itemProductFeatures.itemProductFeature}" var="col">
+                                <tr class="slds-hint-parent">
+                                    <td role="gridcell" class="slds-cell-wrap">
+                                        <div class="">{!col.feature.nameVersion.name}</div>
+                                    </td>
+                                    <td role="gridcell" class="slds-cell-wrap">
+                                        <div class="" data-label="Role">
+                                        <lightning:select name="select1" value="{!col.itemFeatureState}">
+                                            <option value="INCLUDED">INCLUDED</option>
+                                            <option value="EXCLUDED">EXCLUDED</option>
+                                        </lightning:select></div>
+                                    </td>
+                                    <td role="gridcell" class="slds-cell-wrap">
+                                        <div class="" data-label="Role"><lightning:input type="text" value="{!col.itemFeatureLicenseModel.licenseModel.name}"/></div>
+                                    </td>
+                                    <td role="gridcell" class="slds-cell-wrap">
+                                        <lightning:button variant="brand" label="Show License Model" name="{!col.itemFeatureState}" value="{!col.feature.nameVersion.name+'-'+col.itemFeatureLicenseModel.licenseModel.name}" title="Show License Model" onclick="{! c.openModel }" />
+                                    </td>
+                                    
+                                </tr>
+                                
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </aura:set>
+            </lightning:accordionSection>
+        </aura:iteration>
+        
+    </lightning:accordion>
+      <div class="slds-m-around_xx-large">
+        <!--Use aura:if tag to display/hide popup based on isModalOpen value-->  
+        <aura:if isTrue="{!v.isModalOpen}">
+             
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">License Model Attributes </h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+					<aura:if isTrue="{!v.isInclued}">
+                         <aura:iteration items="{!v.gridData.productKeys.productKey}" var="gridCol">
+                                <aura:iteration items="{!gridCol.item.itemProduct.itemProductFeatures.itemProductFeature}" var="col">
+                                    <aura:if isTrue="{!v.featureLicenceModel==col.feature.nameVersion.name+'-'+col.itemFeatureLicenseModel.licenseModel.name}">
+                                    
+                                        <div class="" data-label="Role"><h1><strong>{!col.itemFeatureLicenseModel.licenseModel.name}</strong></h1></div><br/>
+                                     <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--striped slds-max-medium-table--stacked-horizontal"
+                                       role="grid">
+                                         <aura:if isTrue="{!col.itemFeatureLicenseModel.attributes!=null}">
+											<aura:iteration items="{!col.itemFeatureLicenseModel.attributes.attribute}" var="attr">
+											  <!--  <aura:if isTrue="{!and(attr.value!=null,attr.value!='')}">-->
+												<tr>
+												<td role="gridcell" class="slds-cell-wrap">
+													<div class="" data-label="Role">{!attr.name}</div>
+												</td>
+												<td role="gridcell" class="slds-cell-wrap">
+													<div class="" data-label="Role"> <lightning:input type="text" value="{!attr.value}"/>
+													</div>
+												</td>
+											 </tr>
+										   <!-- </aura:if>-->
+												
+											</aura:iteration> 
+												<aura:set attribute="else">
+													<p>No Attribules are available</p>
+												</aura:set>         
+										</aura:if>
+                                         
+                                        
+                                         
+									</table>
+									</aura:if>
+                                </aura:iteration>
+						</aura:iteration>
+							<aura:set attribute="else">
+								<p>Can not configure Licence Models as no features are included </p>
+							</aura:set>         
+						</aura:if>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                        <aura:if isTrue="{!v.isInclued}">
+                        <lightning:button variant="brand"
+                                          label="Save"
+                                          title="Save"
+                                          onclick="{!c.submitDetails}"/>
+                       </aura:if>
+                       <div class="exampleHolder">
+                            <aura:if isTrue="{! v.loaded }">
+                                <aura:set attribute="else">
+                                    <lightning:spinner alternativeText="Loading" />
+                                </aura:set>
+                            </aura:if>
+                        </div>
+ 
+                    </footer>
+                </div>
+            </section>
+            
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+     <!-- Brand variant: Identifies the primary action in a group of buttons -->
+    <lightning:button class="slds-align_absolute-center" variant="brand" label="Save" title="Brand action" onclick="{!c.updateProductFeatures}" />
+        <div class="exampleHolder">
+            <aura:if isTrue="{! v.loaded }">
+                <aura:set attribute="else">
+                    <lightning:spinner alternativeText="Loading" />
+                </aura:set>
+            </aura:if>
+        </div>
+
+    </lightning:card>
+    </div>
+   </aura:if>
+</aura:component>

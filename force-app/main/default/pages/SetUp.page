@@ -1,0 +1,50 @@
+<!--<apex:page controller="InitialSetupController">
+   <apex:pageMessages id="message"></apex:pageMessages>
+    <apex:form >
+        <apex:outputPanel >
+        <apex:commandbutton value="Initial Setup" rerender="message" action="{!createQuoteTrigger}"></apex:commandbutton>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>-->
+
+<apex:page lightningStyleSheets="true" controller="InitialSetupController" action="{!checkInitialSetup}">
+    <head>
+        <apex:slds />
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:form >
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_12-of-12 slds-text-align_center slds-p-around_small">
+                    <apex:pageMessages id="message"></apex:pageMessages>
+                    <apex:pageBlock rendered="{!setupAlreadyCompleted}">
+                        <div class="slds-p-vertical_large">
+                            <p class="slds-text-heading_small slds-p-bottom_medium">You have already completed your setup, please click below button to redirect to home </p>
+                            <a href="/lightning/page/home" class="slds-button slds-button_neutral">Redirect To Home</a>
+                        </div>
+                    </apex:pageBlock>
+                    <apex:pageBlock rendered="{!setupAlreadyCompleted = false}">
+                        <apex:outputPanel rendered="{!setupCompleted = false}">
+                            <div class="slds-p-vertical_large slds-text-align_center">
+                                <p class="slds-text-heading_small slds-p-bottom_medium">Please click on initial setup button to setup quote object</p>
+                                <apex:commandButton value="Initial Setup" action="{!createRemoteSiteSettings}"/>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!setupCompleted}">
+                            <div class="slds-p-vertical_large">
+                                <apex:outputPanel rendered="{!isQuoteEnabled}">
+                                	<p class="slds-text-heading_small slds-p-bottom_medium">Initial setup completed successfully, please click below button to redirect to home</p>
+                                </apex:outputPanel>
+                                <a href="/lightning/page/home" class="slds-button slds-button_neutral">Redirect To Home</a>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlock>
+                </div>
+            </div>
+        </apex:form>
+    </body>
+    
+    <apex:form >
+      
+    </apex:form>
+    
+</apex:page>
